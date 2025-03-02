@@ -37,35 +37,55 @@ local Window = Rayfield:CreateWindow({
 local ESPTab = Window:CreateTab("ESP & Aimbot", nil)
 local ESPSection = ESPTab:CreateSection("ESP")
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
+local Toggle = Tab:CreateToggle({
+   Name = "ESP",
+   CurrentValue = false,
+   Flag = "EspToggle",
+   Callback = function(Value)
+       local Players = game:GetService("Players")
+       local RunService = game:GetService("RunService")
 
-local highlightFuncs = loadstring(game:HttpGet("https://raw.githubusercontent.com/BRD1-1/KAT/refs/heads/main/Funcs"))()
+       local function createHighlight()
+           local highlight = Instance.new("Highlight")
+           highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
+           highlight.FillTransparency = 1
+           highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+           return highlight
+       end
 
-local highlights = {}
+       local function onCharacterAdded(character)
+           local highlight = createHighlight()
+           highlight.Adornee = character
+           highlight.Parent = character
+           character.Destroying:Once(function()
+               highlight:Destroy()
+           end)
+       end
 
-local Toggle = Window:CreateToggle({
-    Name = "Highlight Players",
-    CurrentValue = false,
-    Flag = "HighlightToggle",
-    Callback = function(Value)
-        if Value then
-            for _, player in ipairs(Players:GetPlayers()) do
-                highlightFuncs.onPlayerAdded(player)
-            end
-            Players.PlayerAdded:Connect(highlightFuncs.onPlayerAdded)
-        else
-            for character, highlight in pairs(highlights) do
-                highlight:Destroy()
-            end
-            highlights = {}
-        end
-    end,
+       local function onPlayerAdded(player)
+           player.CharacterAdded:Connect(onCharacterAdded)
+           if player.Character then
+               onCharacterAdded(player.Character)
+           end
+       end
+
+       if Value then
+           Players.PlayerAdded:Connect(onPlayerAdded)
+           for _, player in ipairs(Players:GetPlayers()) do
+               onPlayerAdded(player)
+           end
+       else
+           for _, player in ipairs(Players:GetPlayers()) do
+               if player.Character then
+                   local highlight = player.Character:FindFirstChildOfClass("Highlight")
+                   if highlight then
+                       highlight:Destroy()
+                   end
+               end
+           end
+       end
+   end,
 })
-
-for _, player in ipairs(Players:GetPlayers()) do
-    highlightFuncs.onPlayerAdded(player)
-end
 
 local AimbotSection = ESPTab:CreateSection("AIMBOT")
 
