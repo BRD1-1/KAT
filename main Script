@@ -89,57 +89,6 @@ local Toggle = ESPTab:CreateToggle({
 
 local AimbotSection = ESPTab:CreateSection("AIMBOT")
 
-local Aimbot = Tab:CreateToggle({
-   Name = "Aimbot",
-   CurrentValue = false,
-   Flag = "AimbotToggle",
-   Callback = function(Value)
-      if Value then
-         EnableAimbot()
-      else
-         DisableAimbot()
-      end
-   end,
-})
-
-function EnableAimbot()
-   game:GetService("RunService").Heartbeat:Connect(function()
-      if Aimbot.CurrentValue then
-         local target = GetClosestEnemy()
-         if target then
-            AimAt(target)
-         end
-      end
-   end)
-end
-
-function DisableAimbot()
-end
-
-function GetClosestEnemy()
-   local closestEnemy = nil
-   local shortestDistance = math.huge
-   for _, enemy in pairs(game.Players:GetPlayers()) do
-      if enemy.Team ~= game.Players.LocalPlayer.Team and enemy.Character and enemy.Character:FindFirstChild("Head") then
-         local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - enemy.Character.Head.Position).Magnitude
-         if distance < shortestDistance then
-            shortestDistance = distance
-            closestEnemy = enemy
-         end
-      end
-   end
-   return closestEnemy
-end
-
-function AimAt(target)
-   local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
-   local head = target.Character.Head
-   local direction = (head.Position - humanoidRootPart.Position).unit
-   local aimPosition = humanoidRootPart.Position + direction * 100
-   game:GetService("TweenService"):Create(humanoidRootPart, TweenInfo.new(0.1), {CFrame = CFrame.lookAt(humanoidRootPart.Position, aimPosition)}):Play()
-end
-
-
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
 
