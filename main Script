@@ -89,6 +89,102 @@ local Toggle = ESPTab:CreateToggle({
 
 local AimbotSection = ESPTab:CreateSection("AIMBOT")
 
+local Toggle = ESPTab:CreateToggle({
+   Name = "Aimbot",
+   CurrentValue = false,
+   Flag = "AimbotToggle",
+   Callback = function(Value)
+       local Bot = script.Parent
+       local Humanoid = Bot:FindFirstChild("Humanoid")
+       local Head = Bot:FindFirstChild("Head")
+       local Players = game:GetService("Players")
+       local RunService = game:GetService("RunService")
+
+       local MAX_TARGET_RADIUS = 150
+       local UPDATE_INTERVAL = 0.2
+       local DIFFICULTY = "instant"
+
+       local settings = {
+           low = {aimSpeed = 0.7, aimOffset = Vector3.new(0, math.random(-1, 2), 0)},
+           less = {aimSpeed = 0.9, aimOffset = Vector3.new(0, math.random(-1, 1), 0)},
+           instant = {aimSpeed = 1, aimOffset = Vector3.new(0, 0, 0)}
+       }
+
+       local currentTarget = nil
+       local lastUpdate = 0
+
+       function findNearestPlayer()
+           local closestPlayer = nil
+           local shortestDistance = MAX_TARGET_RADIUS
+
+           for _, player in ipairs(Players:GetPlayers()) do
+               if player.Character and player.Character ~= Bot then
+                   local humanoid = player.Character:FindFirstChild("Humanoid")
+                   local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+
+                   if humanoid and humanoid.Health > 0 and rootPart then
+                       local distance = (rootPart.Position - Bot.HumanoidRootPart.Position).Magnitude
+
+                       if distance < shortestDistance then
+                           local raycastParams = RaycastParams.new()
+                           raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+                           raycastParams.FilterDescendantsInstances = {Bot}
+
+                           local raycastResult = workspace:Raycast(
+                               Head.Position,
+                               (rootPart.Position - Head.Position).Unit * MAX_TARGET_RADIUS,
+                               raycastParams
+                           )
+
+                           if raycastResult and raycastResult.Instance:IsDescendantOf(player.Character) then
+                               closestPlayer = rootPart
+                               shortestDistance = distance
+                           end
+                       end
+                   end
+               end
+           end
+
+           return closestPlayer
+       end
+
+       function updateAim()
+           if not Humanoid or Humanoid.Health <= 0 then return end
+
+           currentTarget = findNearestPlayer()
+
+           if currentTarget then
+               local targetPosition = currentTarget.Position + settings[DIFFICULTY].aimOffset
+               local direction = (targetPosition - Head.Position).Unit
+
+               local currentLook = Head.CFrame.LookVector
+               local newLook = currentLook:Lerp(direction, settings[DIFFICULTY].aimSpeed * UPDATE_INTERVAL)
+
+               Bot:SetPrimaryPartCFrame(CFrame.lookAt(Head.Position, Head.Position + newLook))
+           end
+       end
+
+       RunService.Heartbeat:Connect(function(deltaTime)
+           if not Value then return end
+           lastUpdate += deltaTime
+           if lastUpdate >= UPDATE_INTERVAL then
+               lastUpdate = 0
+               updateAim()
+           end
+       end)
+
+       function setDifficulty(newDifficulty)
+           if settings[newDifficulty] then
+               DIFFICULTY = newDifficulty
+               print("Difficulty set to:", newDifficulty)
+           else
+               warn("Invalid difficulty level")
+           end
+       end
+   end,
+})
+
+
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
 
