@@ -37,7 +37,7 @@ local Window = Rayfield:CreateWindow({
 local ESPTab = Window:CreateTab("ESP & Aimbot", nil)
 local ESPSection = ESPTab:CreateSection("ESP")
 
-local Toggle = Tab:CreateToggle({
+local Toggle = ESPTab:CreateToggle({
    Name = "ESP",
    CurrentValue = false,
    Flag = "EspToggle",
