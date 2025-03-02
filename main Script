@@ -35,27 +35,25 @@ local Window = Rayfield:CreateWindow({
 })
 
 local ESPTab = Window:CreateTab("ESP & Aimbot", nil)
-local Section = ESOTab:CreateSection("ESP")
-
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
+local ESPSection = ESPTab:CreateSection("ESP")
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+
+local highlightFuncs = loadstring(game:HttpGet("https://raw.githubusercontent.com/BRD1-1/KAT/refs/heads/main/Funcs"))()
 
 local highlights = {}
 
-local Toggle = Tab:CreateToggle({
+local Toggle = Window:CreateToggle({
     Name = "Highlight Players",
     CurrentValue = false,
     Flag = "HighlightToggle",
     Callback = function(Value)
         if Value then
             for _, player in ipairs(Players:GetPlayers()) do
-                onPlayerAdded(player)
+                highlightFuncs.onPlayerAdded(player)
             end
-            Players.PlayerAdded:Connect(onPlayerAdded)
+            Players.PlayerAdded:Connect(highlightFuncs.onPlayerAdded)
         else
             for character, highlight in pairs(highlights) do
                 highlight:Destroy()
@@ -66,21 +64,10 @@ local Toggle = Tab:CreateToggle({
 })
 
 for _, player in ipairs(Players:GetPlayers()) do
-    onPlayerAdded(player)
+    highlightFuncs.onPlayerAdded(player)
 end
 
-
-
-local Section = ESOTab:CreateSection("AIMBOT")
-
-
-
-
-local MiscTab = Window:CreateTab("Misc", nil)
-local Section = MiscTab:CreateSection("Movement")
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
+local AimbotSection = ESPTab:CreateSection("AIMBOT")
 
 local Slider = Tab:CreateSlider({
     Name = "Walk Speed",
