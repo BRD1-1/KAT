@@ -1,1 +1,27 @@
+local function createHighlight()
+    local highlight = Instance.new("Highlight")
+    highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
+    highlight.FillTransparency = 1
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    return highlight
+end
 
+local function onCharacterAdded(character)
+    local highlight = createHighlight()
+    highlight.Adornee = character
+    highlight.Parent = character
+    highlights[character] = highlight
+    
+    character.Destroying:Once(function()
+        highlight:Destroy()
+        highlights[character] = nil
+    end)
+end
+
+local function onPlayerAdded(player)
+    player.CharacterAdded:Connect(onCharacterAdded)
+    
+    if player.Character then
+        onCharacterAdded(player.Character)
+    end
+end
