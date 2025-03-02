@@ -175,11 +175,12 @@ end
 local KnifeSection = ESPTab:CreateSection("Knife Aura")
 
 local Toggle = {
-    Name = "Toggle Example",
+    Name = "Knife Aura",
     CurrentValue = false,
     Flag = "Toggle1",
     Callback = function(Value)
         local Players = game:GetService("Players")
+        local Loclocal Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
         local toggleActive = Value
         local function getRandomPlayer()
@@ -193,15 +194,11 @@ local Toggle = {
                 return playerList[math.random(1, #playerList)]
             end
         end
-        local function followAndStab(target)
+        local function followTarget(target)
             while toggleActive and target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") do
                 local char = LocalPlayer.Character
-                local Knife = char and char:FindFirstChild("Knife")
                 if char and char:FindFirstChild("HumanoidRootPart") then
-                    char.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
-                    if Knife then
-                        Knife:Activate()
-                    end
+                    char.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(0, 2, -2)
                 end
                 wait(0.5)
             end
@@ -209,7 +206,7 @@ local Toggle = {
         local function teleportAndFollow()
             local target = getRandomPlayer()
             if target then
-                followAndStab(target)
+                followTarget(target)
             end
         end
         while toggleActive do
@@ -218,7 +215,6 @@ local Toggle = {
         end
     end,
 }
-
 
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
