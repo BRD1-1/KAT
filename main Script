@@ -87,8 +87,6 @@ local Toggle = ESPTab:CreateToggle({
    end,
 })
 
-local AimbotSection = ESPTab:CreateSection("AIMBOT")
-
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
 
