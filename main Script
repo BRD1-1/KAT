@@ -40,3 +40,9 @@ local Section = ESOTab:CreateSection("ESP")
 
 
 local Section = ESOTab:CreateSection("AIMBOT")
+
+
+
+
+local MiscTab = Window:CreateTab("Misc", nil)
+local Section = MiscTab:CreateSection("Movement")
