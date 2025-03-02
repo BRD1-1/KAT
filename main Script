@@ -92,22 +92,22 @@ local AimbotSection = ESPTab:CreateSection("AIMBOT")
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
 
-local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
-if not humanoid then
-    warn("Humanoid not found!")
-    return
-end
-
 local Slider = MiscTab:CreateSlider({
     Name = "Walk Speed",
     Range = {0, 100},
     Increment = 1,
     Suffix = " Speed",
-    CurrentValue = humanoid.WalkSpeed,
+    CurrentValue = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed or 16,
     Flag = "WalkSpeedSlider",
     Callback = function(Value)
-        humanoid.WalkSpeed = Value
+        local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = Value
+        end
     end,
 })
 
-Slider:Set(humanoid.WalkSpeed)
+local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
+if humanoid then
+    Slider:Set(humanoid.WalkSpeed)
+end
