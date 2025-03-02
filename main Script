@@ -41,6 +41,9 @@ local Section = ESOTab:CreateSection("ESP")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
 local highlights = {}
 
 local function createHighlight()
