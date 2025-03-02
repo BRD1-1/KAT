@@ -92,7 +92,7 @@ local AimbotSection = ESPTab:CreateSection("AIMBOT")
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
 
-local Slider = Tab:CreateSlider({
+local Slider = MiscTab:CreateSlider({
     Name = "Walk Speed",
     Range = {0, 100},
     Increment = 1,
