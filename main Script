@@ -46,3 +46,20 @@ local Section = ESOTab:CreateSection("AIMBOT")
 
 local MiscTab = Window:CreateTab("Misc", nil)
 local Section = MiscTab:CreateSection("Movement")
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local Slider = Tab:CreateSlider({
+    Name = "Walk Speed",
+    Range = {0, 100},
+    Increment = 1,
+    Suffix = " Speed",
+    CurrentValue = humanoid.WalkSpeed,
+    Flag = "WalkSpeedSlider",
+    Callback = function(Value)
+        humanoid.WalkSpeed = Value
+    end,
+})
+
+Slider:Set(humanoid.WalkSpeed)
