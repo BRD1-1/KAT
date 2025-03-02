@@ -174,7 +174,7 @@ end
 
 local KnifeSection = ESPTab:CreateSection("Knife Aura")
 
-local KnifeToggle = ESPTab:CreateToggle({
+local KAuraToggle = ESPTab:CreateToggle({
     Name = "Knife Aura",
     CurrentValue = false,
     Flag = "KnifeToggle",
