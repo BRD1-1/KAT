@@ -181,8 +181,9 @@ local KAuraToggle = ESPTab:CreateToggle({
     Callback = function(Value)
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
-        local Knife = Players[LocalPlayer.Name].Backpack:FindFirstChild("Knife")
         local toggleActive = Value
+        local Knife = LocalPlayer.Backpack:FindFirstChild("Knife") or LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Knife")
+
         local function getRandomPlayer()
             local playerList = {}
             for _, player in pairs(Players:GetPlayers()) do
@@ -194,6 +195,7 @@ local KAuraToggle = ESPTab:CreateToggle({
                 return playerList[math.random(1, #playerList)]
             end
         end
+
         local function followAndStab(target)
             while toggleActive and target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") do
                 local char = LocalPlayer.Character
@@ -207,18 +209,25 @@ local KAuraToggle = ESPTab:CreateToggle({
                 wait(0.5)
             end
         end
+
         local function teleportAndFollow()
             local target = getRandomPlayer()
             if target then
                 followAndStab(target)
             end
         end
-        while toggleActive do
-            teleportAndFollow()
-            wait(2)
+
+        if toggleActive then
+            task.spawn(function()
+                while toggleActive do
+                    teleportAndFollow()
+                    wait(2)
+                end
+            end)
         end
     end,
-}
+})
+
 
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
