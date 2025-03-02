@@ -172,6 +172,53 @@ function GetNearestPlayerToMouse()
 	return false
 end
 
+local KnifeSection = ESPTab:CreateSection("Knife Aura")
+
+local KnifeToggle = {
+    Name = "Knife Aura",
+    CurrentValue = false,
+    Flag = "KnifeToggle",
+    Callback = function(Value)
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local Knife = Players[LocalPlayer.Name].Backpack:FindFirstChild("Knife")
+        local toggleActive = Value
+        local function getRandomPlayer()
+            local playerList = {}
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                    table.insert(playerList, player)
+                end
+            end
+            if #playerList > 0 then
+                return playerList[math.random(1, #playerList)]
+            end
+        end
+        local function followAndStab(target)
+            while toggleActive and target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") do
+                local char = LocalPlayer.Character
+                if char and char:FindFirstChild("HumanoidRootPart") then
+                    char.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Knife then
+                        Knife.Parent = LocalPlayer.Character
+                        Knife:Activate()
+                    end
+                end
+                wait(0.5)
+            end
+        end
+        local function teleportAndFollow()
+            local target = getRandomPlayer()
+            if target then
+                followAndStab(target)
+            end
+        end
+        while toggleActive do
+            teleportAndFollow()
+            wait(2)
+        end
+    end,
+}
 
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
