@@ -201,7 +201,7 @@ local Toggle = ESPTab:CreateToggle({
                 if char and char:FindFirstChild("HumanoidRootPart") then
                     char.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(0, 2, -2)
                 end
-                wait(0.5)
+                task.wait(0.5)  -- Use task.wait() instead of wait()
             end
         end
 
@@ -216,12 +216,13 @@ local Toggle = ESPTab:CreateToggle({
             task.spawn(function()
                 while toggleActive do
                     teleportAndFollow()
-                    wait(2)
+                    task.wait(2)  -- Use task.wait() instead of wait()
                 end
             end)
         end
     end,
 })
+
 
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
