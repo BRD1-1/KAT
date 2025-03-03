@@ -214,7 +214,7 @@ local Toggle = ESPTab:CreateToggle({
             wait(2)
         end
     end,
-}
+})
 
 local MiscTab = Window:CreateTab("Misc", nil)
 local MiscSection = MiscTab:CreateSection("Walkspeed")
