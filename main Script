@@ -180,9 +180,9 @@ local Toggle = ESPTab:CreateToggle({
     Flag = "Toggle1",
     Callback = function(Value)
         local Players = game:GetService("Players")
-        local Loclocal Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
         local toggleActive = Value
+
         local function getRandomPlayer()
             local playerList = {}
             for _, player in pairs(Players:GetPlayers()) do
@@ -194,6 +194,7 @@ local Toggle = ESPTab:CreateToggle({
                 return playerList[math.random(1, #playerList)]
             end
         end
+
         local function followTarget(target)
             while toggleActive and target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") do
                 local char = LocalPlayer.Character
@@ -203,15 +204,21 @@ local Toggle = ESPTab:CreateToggle({
                 wait(0.5)
             end
         end
+
         local function teleportAndFollow()
             local target = getRandomPlayer()
             if target then
                 followTarget(target)
             end
         end
-        while toggleActive do
-            teleportAndFollow()
-            wait(2)
+
+        if toggleActive then
+            task.spawn(function()
+                while toggleActive do
+                    teleportAndFollow()
+                    wait(2)
+                end
+            end)
         end
     end,
 })
