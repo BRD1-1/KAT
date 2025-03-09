@@ -79,7 +79,7 @@ local function CreateESP(Player)
                local Vector, OnScreen = Camera:WorldToViewportPoint(RootPart.Position)
                if OnScreen then
                    local Size = Vector3.new(2, 3, 0) * (1 / (RootPart.Position - Camera.CFrame.Position).Magnitude * 100)
-                   Box.Size = Vector2.new(Size.X * 50, Size.Y * 50) 
+                   Box.Size = Vector2.new(Size.X * 30, Size.Y * 30)  
                    Box.Position = Vector2.new(Vector.X - Box.Size.X / 2, Vector.Y - Box.Size.Y / 2)
                    Box.Visible = true
                else
