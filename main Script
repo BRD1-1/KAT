@@ -114,3 +114,17 @@ Players.PlayerAdded:Connect(function(Player)
        CreateESP(Player)
    end
 end)
+
+local TPSection = ESPTab:CreateSection("Teleport")
+
+local Button = ESPTab:CreateButton({
+    Name = "Teleport Up",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            local currentPosition = character.HumanoidRootPart.Position
+            character.HumanoidRootPart.CFrame = CFrame.new(currentPosition.X, currentPosition.Y + 100, currentPosition.Z)
+        end
+    end,
+})
