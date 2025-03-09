@@ -132,3 +132,25 @@ local Button = ESPTab:CreateButton({
 
 local AutoTab = Window:CreateTab("Autofarming", nil)
 local FarmSection = AutoTab:CreateSection("AutoFarm")
+
+local Toggle = AutoTab:CreateToggle({
+    Name = "AutoFarm Hider",
+    CurrentValue = false,
+    Flag = "AutoFarmHide",
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        local teamName = "Hider"
+        local voidPosition = Vector3.new(0, -5000, 0)
+
+        while Value do
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                if player.Team and player.Team.Name == teamName then
+                    character.HumanoidRootPart.CFrame = CFrame.new(voidPosition)
+                    character.HumanoidRootPart.Anchored = true
+                end
+            end
+            wait(1)
+        end
+    end,
+})
