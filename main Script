@@ -148,9 +148,13 @@ local Toggle = AutoTab:CreateToggle({
                 if player.Team and player.Team.Name == teamName then
                     character.HumanoidRootPart.CFrame = CFrame.new(voidPosition)
                     character.HumanoidRootPart.Anchored = true
+                    if character:FindFirstChild("Humanoid") then
+                        character.Humanoid.PlatformStand = true
+                    end
                 end
             end
             wait(1)
         end
     end,
 })
+
