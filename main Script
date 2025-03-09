@@ -34,7 +34,7 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local ESPTab = Window:CreateTab("PVP", nil)
+local ESPTab = Window:CreateTab("Main", nil)
 local ESPSection = ESPTab:CreateSection("ESP")
 
 local ESPEnabled = false
