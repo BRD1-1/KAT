@@ -37,4 +37,72 @@ local Window = Rayfield:CreateWindow({
 local ESPTab = Window:CreateTab("PVP", nil)
 local ESPSection = ESPTab:CreateSection("ESP")
 
+local Toggle = MainTab:CreateToggle({
+   Name = "ESP Toggle",
+   CurrentValue = false,
+   Flag = "ESP_Toggle",
+   Callback = function(Value)
+       local Players = game:GetService("Players")
+       local RunService = game:GetService("RunService")
+       local Camera = workspace.CurrentCamera
+       local LocalPlayer = Players.LocalPlayer
+       local ESPEnabled = Value
+
+       local function GetValidRootPart(Character)
+           if Character then
+               for _, Part in pairs(Character:GetChildren()) do
+                   if Part:IsA("BasePart") and Part.Size.Magnitude < 10 then -- Ignore oversized parts
+                       return Part
+                   end
+               end
+           end
+           return nil
+       end
+
+       local function CreateESP(Player)
+           if Player.Team and Player.Team.Name ~= "Hider" then return end -- Only highlight Hiders
+           
+           local Box = Drawing.new("Square")
+           Box.Thickness = 2
+           Box.Color = Color3.new(1, 0, 0)
+           Box.Filled = false
+           Box.Visible = false
+           
+           local function Update()
+               if ESPEnabled and Player and Player.Character and Player ~= LocalPlayer then
+                   local RootPart = GetValidRootPart(Player.Character)
+                   if RootPart then
+                       local Vector, OnScreen = Camera:WorldToViewportPoint(RootPart.Position)
+                       if OnScreen then
+                           local Size = Vector3.new(2, 3, 0) * (1 / (RootPart.Position - Camera.CFrame.Position).Magnitude * 100)
+                           Box.Size = Vector2.new(Size.X * 50, Size.Y * 50) -- Reduced size multiplier
+                           Box.Position = Vector2.new(Vector.X - Box.Size.X / 2, Vector.Y - Box.Size.Y / 2)
+                           Box.Visible = true
+                       else
+                           Box.Visible = false
+                       end
+                   else
+                       Box.Visible = false
+                   end
+               else
+                   Box.Visible = false
+               end
+           end
+           
+           RunService.RenderStepped:Connect(Update)
+       end
+
+       for _, Player in pairs(Players:GetPlayers()) do
+           if Player ~= LocalPlayer then
+               CreateESP(Player)
+           end
+       end
+
+       Players.PlayerAdded:Connect(function(Player)
+           if Player.Team and Player.Team.Name == "Hider" then
+               CreateESP(Player)
+           end
+       end)
+   end,
+})
 
