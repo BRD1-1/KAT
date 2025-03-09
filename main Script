@@ -75,6 +75,11 @@ local function CreateESP(Player)
    RunService.RenderStepped:Connect(function()
        if not Player.Team or Player.Team.Name == "Seeker" then
            Box.Visible = false
+           Box:Remove()
+           return
+       end
+       if not Player.Team or Player.Team.Name == "Seeker" then
+           Box.Visible = false
            return
        end
        if ESPEnabled and Player and Player.Character and Player ~= LocalPlayer then
