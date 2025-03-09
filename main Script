@@ -128,3 +128,7 @@ local Button = ESPTab:CreateButton({
         end
     end,
 })
+
+
+local AutoTab = Window:CreateTab("Autofarming", nil)
+local FarmSection = ESPTab:CreateSection("AutoFarm")
