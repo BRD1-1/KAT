@@ -140,16 +140,43 @@ local Toggle = AutoTab:CreateToggle({
     Callback = function(Value)
         local player = game.Players.LocalPlayer
         local character = player.Character
-        local teamName = "Hider"
-        local voidPosition = Vector3.new(0, -5000, 0)
 
         while Value do
             if character and character:FindFirstChild("HumanoidRootPart") then
-                if player.Team and player.Team.Name == teamName then
-                    character.HumanoidRootPart.CFrame = CFrame.new(voidPosition)
-                    character.HumanoidRootPart.Anchored = true
+                if player.Team and player.Team.Name == "Hider" then
                     if character:FindFirstChild("Humanoid") then
-                        character.Humanoid.PlatformStand = true
+                        local humanoid = character.Humanoid
+                        humanoid.PlatformStand = true
+                        humanoid.Health = humanoid.Health
+                        humanoid.MaxHealth = math.huge
+                        humanoid.HealthChanged:Connect(function()
+                            humanoid.Health = humanoid.Health
+                        end)
+                        humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics, false)
+                        humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                        humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+                        
+                        if character:FindFirstChild("Head") then
+                            character.Head.CanCollide = false
+                        end
+                        if character:FindFirstChild("UpperTorso") then
+                            character.UpperTorso.CanCollide = false
+                        end
+                        if character:FindFirstChild("LowerTorso") then
+                            character.LowerTorso.CanCollide = false
+                        end
+                        if character:FindFirstChild("RightLeg") then
+                            character.RightLeg.CanCollide = false
+                        end
+                        if character:FindFirstChild("LeftLeg") then
+                            character.LeftLeg.CanCollide = false
+                        end
+                        if character:FindFirstChild("RightArm") then
+                            character.RightArm.CanCollide = false
+                        end
+                        if character:FindFirstChild("LeftArm") then
+                            character.LeftArm.CanCollide = false
+                        end
                     end
                 end
             end
@@ -157,4 +184,3 @@ local Toggle = AutoTab:CreateToggle({
         end
     end,
 })
-
