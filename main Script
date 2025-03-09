@@ -37,8 +37,8 @@ local Window = Rayfield:CreateWindow({
 local ESPTab = Window:CreateTab("PVP", nil)
 local ESPSection = ESPTab:CreateSection("ESP")
 
-local Toggle = MainTab:CreateToggle({
-   Name = "ESP Toggle",
+local Toggle = ESPTab:CreateToggle({
+   Name = "Hider ESP",
    CurrentValue = false,
    Flag = "ESP_Toggle",
    Callback = function(Value)
