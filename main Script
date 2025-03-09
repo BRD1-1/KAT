@@ -6,32 +6,13 @@ local Window = Rayfield:CreateWindow({
    LoadingTitle = "Hide Or Die",
    LoadingSubtitle = "by B1RD,",
    Theme = "Default", 
-
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false, 
-
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = nil, 
-      FileName = "Big Hub"
-   },
-
-   Discord = {
-      Enabled = false, 
-      Invite = "noinvitelink", 
-      RememberJoins = true 
-   },
-
+   ConfigurationSaving = { Enabled = true, FolderName = nil, FileName = "Big Hub" },
+   Discord = { Enabled = false, Invite = "noinvitelink", RememberJoins = true },
    KeySystem = false, 
-   KeySettings = {
-      Title = "Untitled",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided", 
-      FileName = "Key", 
-      SaveKey = true, 
-      GrabKeyFromSite = false, 
-      Key = {"Hello"} 
-   }
+   KeySettings = { Title = "Untitled", Subtitle = "Key System", Note = "No method of obtaining the key is provided", 
+                   FileName = "Key", SaveKey = true, GrabKeyFromSite = false, Key = {"Hello"} }
 })
 
 local ESPTab = Window:CreateTab("PVP", nil)
@@ -52,6 +33,8 @@ local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
+local Boxes = {}
+
 local function GetValidRootPart(Character)
    if Character then
        for _, Part in pairs(Character:GetChildren()) do
@@ -64,22 +47,23 @@ local function GetValidRootPart(Character)
 end
 
 local function CreateESP(Player)
-   if Player.Team and Player.Team.Name ~= "Hider" then return end 
-   
+   if Boxes[Player] then return end -- Prevent duplicate ESP
+
    local Box = Drawing.new("Square")
    Box.Thickness = 2
    Box.Color = Color3.new(1, 0, 0)
    Box.Filled = false
    Box.Visible = false
-   
+   Boxes[Player] = Box
+
    local function Update()
-       if ESPEnabled and Player and Player.Character and Player ~= LocalPlayer then
+       if ESPEnabled and Player and Player.Character and Player ~= LocalPlayer and Player.Team and Player.Team.Name == "Hider" then
            local RootPart = GetValidRootPart(Player.Character)
            if RootPart then
                local Vector, OnScreen = Camera:WorldToViewportPoint(RootPart.Position)
                if OnScreen then
                    local Size = Vector3.new(2, 3, 0) * (1 / (RootPart.Position - Camera.CFrame.Position).Magnitude * 100)
-                   Box.Size = Vector2.new(Size.X * 50, Size.Y * 50) 
+                   Box.Size = Vector2.new(Size.X * 50, Size.Y * 50)
                    Box.Position = Vector2.new(Vector.X - Box.Size.X / 2, Vector.Y - Box.Size.Y / 2)
                    Box.Visible = true
                else
@@ -92,18 +76,29 @@ local function CreateESP(Player)
            Box.Visible = false
        end
    end
-   
+
    RunService.RenderStepped:Connect(Update)
 end
 
 for _, Player in pairs(Players:GetPlayers()) do
-   if Player ~= LocalPlayer then
+   if Player ~= LocalPlayer and Player.Team and Player.Team.Name == "Hider" then
        CreateESP(Player)
    end
 end
 
 Players.PlayerAdded:Connect(function(Player)
-   if Player.Team and Player.Team.Name == "Hider" then
-       CreateESP(Player)
+   Player:GetPropertyChangedSignal("Team"):Connect(function() -- Detect team changes
+       if Player.Team and Player.Team.Name == "Hider" then
+           CreateESP(Player)
+       end
+   end)
+end)
+
+RunService.RenderStepped:Connect(function()
+   for Player, Box in pairs(Boxes) do
+       if not ESPEnabled or not Player or not Player.Character or not Player.Team or Player.Team.Name ~= "Hider" then
+           Box.Visible = false
+       end
    end
 end)
+
